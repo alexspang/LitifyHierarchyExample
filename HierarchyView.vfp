@@ -1,0 +1,31 @@
+<apex:page controller="HierarchyController">
+    <apex:form >
+
+    	<apex:pageBlock > 
+            <apex:commandButton style="float: right;" value="Add Case Member" action="{!redirectNewMember}"/>
+            <br/>
+            <br/>
+            <br/>
+            <apex:repeat value="{!possibleRoles}" var="r"> 
+                <apex:outputText style="font-weight:bold;font-size:2em;" value="{!r}" />
+                <br/>
+                <apex:repeat value="{!myCaseMembers}" var="case">
+                    <apex:outputPanel id="thePanel" style="margin-left:20px;font-size:1.5em;" rendered="{!case.Role_In_Case__c == r && case.Parent_Contact__c == null}">
+                    <apex:outputField value="{!case.Contact__c}" />
+                        <apex:commandButton style="float:right;height:15px;font-size:10px;" action="{!URLFOR($Action.Case_Member__c.Delete,case.Id,[retURL='/' +currentRecord])}" value="Delete"/>
+                    <br/>
+                    <apex:repeat value="{!parentContacts}" var="pc">
+                        <apex:outputPanel style="margin-left:40px;" rendered="{!pc.Parent_Contact__c == case.Contact__c}">
+                            <apex:outputField value="{!pc.Contact__c}"/>
+                            <apex:commandButton style="float:right;height:15px;font-size:10px;" action="{!URLFOR($Action.Case_Member__c.Delete,pc.Id,[retURL='/' +currentRecord])}" value="Delete"/>
+                        </apex:outputPanel>
+                        <br/>
+                    </apex:repeat>
+
+                    </apex:outputPanel>
+                </apex:repeat>
+                <br/>
+            </apex:repeat>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
