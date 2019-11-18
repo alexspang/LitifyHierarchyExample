@@ -1,0 +1,20 @@
+public class NewCaseMemberController {
+    
+    Public Law_Case__c currentCase = [SELECT Id,Name FROM Law_Case__c WHERE Id =:ApexPages.currentPage().getParameters().get('case.id')];
+    public Case_Member__c newCaseMember{get;set;} 
+    
+    
+    public Law_Case__c getCurrentCase(){
+        return currentCase;
+    }
+    public NewCaseMemberController(){
+        newCaseMember = new Case_Member__c();
+    }
+    public PageReference save(){
+        newCaseMember.Law_Case__c=currentCase.Id;
+        upsert newCaseMember;
+        PageReference pr2 = new PageReference('/' + ApexPages.currentPage().getParameters().get('case.id'));
+        return pr2;
+    }
+	
+}
