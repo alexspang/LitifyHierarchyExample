@@ -1,0 +1,37 @@
+public class HierarchyController {
+    Public List<String> possibleRoles{get;set;}
+    Public List<Case_Member__c> myCaseMembers = [SELECT Id, Contact__c, Role_In_Case__c, Parent_Contact__c,Law_Case__c FROM Case_Member__c 
+                                                 WHERE Law_Case__c = :ApexPages.currentPage().getParameters().get('id')];
+    
+    Public List<Case_Member__c> parentContacts = [SELECT Id, Contact__c, Parent_Contact__c FROM Case_Member__c
+                                                 WHERE Law_Case__c = :ApexPages.currentPage().getParameters().get('id') 
+                                                 AND Parent_Contact__c != null];
+    Public Id currentRecord{get;set;} 
+    
+    public HierarchyController(){
+        possibleRoles = New List <String>();
+        Schema.DescribeFieldResult fieldResult = Case_Member__c.Role_In_Case__c.getDescribe();
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry pickList : ple) {
+            possibleRoles.add(pickList.getLabel());
+        }
+        
+        currentRecord = ApexPages.currentPage().getParameters().get('id');
+		
+    }
+    public List<Case_Member__c> getMyCaseMembers(){
+        return myCaseMembers;
+    } 
+    public PageReference redirectNewMember(){
+        PageReference pr1 = new PageReference('/apex/NewCaseMember');
+        pr1.getParameters().put('case.id',ApexPages.currentPage().getParameters().get('id'));
+        return pr1;
+    }
+    
+    public List<Case_Member__c> getParentContacts() {
+        return parentContacts;
+    }
+    
+
+
+}
